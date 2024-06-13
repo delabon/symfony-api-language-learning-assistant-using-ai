@@ -1,5 +1,6 @@
 /.idea
 /mysql
+/postgres
 /logs
 /data
 /config/ssls

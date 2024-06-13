@@ -6,9 +6,9 @@ ARG GID=1000
 WORKDIR /var/www/project
 
 RUN apt-get update \
-    && apt-get install -y zlib1g-dev g++ git libicu-dev libzip-dev libpng-dev libjpeg-dev zip \
+    && apt-get install -y zlib1g-dev g++ git libicu-dev libzip-dev libpng-dev libjpeg-dev zip libpq-dev \
     && docker-php-ext-configure gd --with-jpeg \
-    && docker-php-ext-install intl opcache pdo pdo_mysql gd \
+    && docker-php-ext-install intl opcache pdo pgsql pdo_pgsql gd \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && pecl install apcu \

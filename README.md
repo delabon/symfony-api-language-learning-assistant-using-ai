@@ -6,6 +6,7 @@ An application to help users learn new languages through conversation practice a
 
 - PHP 8.3: Programming language
 - Symfony 7.1: PHP Framework
+- PostgreSQL 16.3: Database
 - PHPUnit: Unit and Feature Tests
 - Docker: Containerization
 - Github actions: Continuous Integration
