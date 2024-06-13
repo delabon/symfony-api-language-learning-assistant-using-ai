@@ -1,4 +1,4 @@
-An application to help users learn new languages through conversation practice and exercises.
+A RESTful application to help users learn new languages through conversation practice.
 
 - **Key Feature**: 
 
@@ -54,3 +54,7 @@ Copy the content of .env file and paste it in .env.local
 #### Bowser
 
 Now, open https://language-learning-assitant.test in your browser
+
+#### Database
+
+http://localhost:8080
