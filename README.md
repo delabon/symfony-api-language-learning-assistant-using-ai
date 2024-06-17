@@ -1,4 +1,4 @@
-A RESTful application to help users learn new languages through conversation practice.
+A RESTful application to help users learn new languages through conversation practice with AI.
 
 - **Key Feature**: 
 
