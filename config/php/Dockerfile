@@ -17,7 +17,6 @@ RUN apt-get update \
     && docker-php-ext-install zip \
     && pecl install redis \
     && docker-php-ext-enable redis \
-    && apt-get install -y sqlite3 \
     && apt-get install -y procps \
     && rm -rf /var/lib/apt/lists/* \
     && groupmod -g "${GID}" www-data && usermod -u "${UID}" -g "${GID}" www-data \
