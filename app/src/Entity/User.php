@@ -6,12 +6,13 @@ use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints AS Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[UniqueEntity('username')]
-#[UniqueEntity('email')]
-#[UniqueEntity('apiKey')]
+#[UniqueEntity(fields: ['username'], message: 'This username is already used.', entityClass: User::class)]
+#[UniqueEntity(fields: ['email'], message: 'This email is already used.', entityClass: User::class)]
+#[UniqueEntity(fields: ['apiKey'], message: 'This apiKey is already used.', entityClass: User::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_API_KEY', fields: ['apiKey'])]
@@ -23,12 +24,26 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'The name should not be blank.')]
+    #[Assert\Regex(
+        pattern: '/^[a-z][a-z ]+$/i',
+        message: 'The name should only contain letters and spaces.'
+    )]
+    #[Assert\Length(min: 3, max: 50, minMessage: 'The name should be between 3 and 50 characters long.', maxMessage: 'The name should be between 3 and 50 characters long.')]
     private string $name = '';
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'The username should not be blank.',)]
+    #[Assert\Regex(
+        pattern: '/^[a-z0-9][a-z0-9_]+$/',
+        message: 'The username should only contain lowercase letters, numbers, and underscores.'
+    )]
+    #[Assert\Length(min: 3, max: 50, minMessage: 'The username should be between 3 and 50 characters long.', maxMessage: 'The username should be between 3 and 50 characters long.')]
     private string $username = '';
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'The email should not be blank.')]
+    #[Assert\Email]
     private string $email = '';
 
     #[ORM\Column(length: 255)]
@@ -39,6 +54,26 @@ class User
 
     #[ORM\Column]
     private ?DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @param array $data
+     * @return User
+     */
+    public static function createFromArray(array $data): User
+    {
+        $object = new User();
+        $props = get_class_vars(User::class);
+
+        foreach ($data as $key => $value) {
+            $method = 'set' . ucfirst($key);
+
+            if (array_key_exists($key, $props) && method_exists($object, $method)) {
+                $object->$method($value);
+            }
+        }
+
+        return $object;
+    }
 
     public function getId(): ?int
     {
