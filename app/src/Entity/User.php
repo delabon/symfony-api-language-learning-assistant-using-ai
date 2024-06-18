@@ -56,7 +56,7 @@ class User
     private ?DateTimeImmutable $updatedAt = null;
 
     /**
-     * @param array $data
+     * @param array<string, mixed> $data
      * @return User
      */
     public static function createFromArray(array $data): User

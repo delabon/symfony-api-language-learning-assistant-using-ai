@@ -114,7 +114,7 @@ class RegisterTest extends FeatureTestCase
 
     /**
      * @dataProvider userInvalidDataProvider
-     * @param array $data
+     * @param array<string, mixed> $data
      * @param string $input
      * @param string $message
      * @return void
@@ -194,6 +194,9 @@ class RegisterTest extends FeatureTestCase
         $this->assertSame('This email is already used.', $responseData['input_errors']['email']);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function userInvalidDataProvider(): array
     {
         return [
