@@ -8,6 +8,7 @@ A RESTful application to help users learn new languages through conversation pra
 - Symfony 7.1: PHP Framework
 - PostgreSQL 16.3: Database
 - PHPUnit: Unit and Feature Tests
+- PHPStan: Static Analysis
 - Docker: Containerization
 - Github actions: Continuous Integration
 - API: Openai ChatGPT API
