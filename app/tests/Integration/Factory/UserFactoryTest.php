@@ -6,14 +6,12 @@ use App\Entity\User;
 use App\Factory\Factory;
 use App\Factory\FactoryInterface;
 use App\Factory\UserFactory;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\Tests\IntegrationTestCase;
 
-class UserFactoryTest extends KernelTestCase
+class UserFactoryTest extends IntegrationTestCase
 {
     public function testCreatesUserCorrectly(): void
     {
-        static::bootKernel();
-
         /** @var UserFactory $userFactory */
         $userFactory = $this->getContainer()->get(UserFactory::class);
 

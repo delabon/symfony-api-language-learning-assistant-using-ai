@@ -14,7 +14,6 @@ class UserFactoryTest extends TestCase
 {
     public function testMakesUserCorrectly(): void
     {
-        /** @var UserFactory $userFactory */
         $userFactory = new UserFactory(Faker::create(), $this->createStub(EntityManagerInterface::class));
 
         $user = $userFactory->create();
