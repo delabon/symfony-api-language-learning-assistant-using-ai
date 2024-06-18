@@ -4,14 +4,13 @@ A RESTful application to help users learn new languages through conversation pra
 
 ### Tech stack
 
-- PHP 8.3: Programming language
-- Symfony 7.1: PHP Framework
-- PostgreSQL 16.3: Database
-- PHPUnit: Unit and Feature Tests
-- PHPStan: Static Analysis
-- Docker: Containerization
-- Github actions: Continuous Integration
-- API: Openai ChatGPT API
+- **Backend**: PHP 8.2, Symfony 7.1
+- **Database**: PostgreSQL 16.3
+- **Testing**: PHPUnit for unit, integration and feature testing
+- **Static Analysis**: PHPStan for analyzing code quality
+- **Environment Management**: Docker for containerization and consistent development environments
+- **CI**: Github actions for continuous Integration
+- **Openai**: ChatGPT API for conversation practice
 
 ### To test this on your local machine, follow the instructions bellow
 
