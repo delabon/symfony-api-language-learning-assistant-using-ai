@@ -17,8 +17,15 @@ abstract class Factory implements FactoryInterface
     {
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     abstract protected function defaults(): array;
 
+    /**
+     * @param object $object
+     * @return string[]
+     */
     protected function getClassProps(object $object): array
     {
         $reflectionClass = new ReflectionClass($object);
@@ -32,6 +39,10 @@ abstract class Factory implements FactoryInterface
         return $props;
     }
 
+    /**
+     * @param array<string, mixed> $overrides
+     * @return array<string, mixed>
+     */
     protected function overrideDefaults(array $overrides): array
     {
         $defaults = $this->defaults();
@@ -51,6 +62,10 @@ abstract class Factory implements FactoryInterface
         return $defaults;
     }
 
+    /**
+     * @param array<string, mixed> $overrides
+     * @return object
+     */
     public function make(array $overrides = []): object
     {
         if (!class_exists($this->entityClass)) {
@@ -76,6 +91,10 @@ abstract class Factory implements FactoryInterface
         return $object;
     }
 
+    /**
+     * @param array<string, mixed> $overrides
+     * @return object
+     */
     public function create(array $overrides = []): object
     {
         $object = $this->make($overrides);
