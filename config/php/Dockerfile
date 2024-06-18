@@ -22,6 +22,8 @@ RUN apt-get update \
     && groupmod -g "${GID}" www-data && usermod -u "${UID}" -g "${GID}" www-data \
     && chown www-data:www-data -R /var/www
 
+COPY /config/php/setup.ini /usr/local/etc/php/conf.d/setup.ini
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN curl -sS https://get.symfony.com/cli/installer | bash \
     && mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
