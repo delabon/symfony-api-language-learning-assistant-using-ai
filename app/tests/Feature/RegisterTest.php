@@ -13,24 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RegisterTest extends FeatureTestCase
 {
-    private ?EntityManagerInterface $entityManager;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
-    }
-
-    protected function tearDown(): void
-    {
-        // doing this is recommended to avoid memory leaks
-        $this->entityManager->close();
-        $this->entityManager = null;
-
-        parent::tearDown();
-    }
-
     public function testRegistersUsersSuccessfully(): void
     {
         /** @var UserRepository $userRepository */
