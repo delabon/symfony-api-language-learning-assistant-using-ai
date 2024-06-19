@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\ApiKeyGenerator;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,11 +19,12 @@ class RegisterController extends AbstractController
     public function store(
         Request $request,
         EntityManagerInterface $entityManager,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        ApiKeyGenerator $apiKeyGenerator
     ): JsonResponse
     {
         $user = User::createFromArray($request->getPayload()->all());
-        $user->setApiKey(hash('sha512', uniqid() . $user->getEmail() . $user->getUsername() . $this->getParameter('app_secret')));
+        $user->setApiKey($apiKeyGenerator->generate($user));
         $user->setCreatedAt(new DateTimeImmutable());
         $user->setUpdatedAt($user->getCreatedAt());
 
