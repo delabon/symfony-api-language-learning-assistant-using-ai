@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RegenerateApiKeyTest extends FeatureTestCase
 {
+    protected const ENDPOINT = '/api-key/regenerate';
+
     public function testRegenerateApiKeySuccessfully(): void
     {
         $userRepository = $this->entityManager->getRepository(User::class);
@@ -22,10 +24,10 @@ class RegenerateApiKeyTest extends FeatureTestCase
 
         $this->client->request(
             'PATCH',
-            '/api/v1/api-key/regenerate',
+            self::ENDPOINT,
             [
                 'email' => $email
-            ]
+            ],
         );
 
         $response = $this->client->getResponse();
@@ -45,7 +47,7 @@ class RegenerateApiKeyTest extends FeatureTestCase
     {
         $this->client->request(
             'PATCH',
-            '/api/v1/api-key/regenerate',
+            self::ENDPOINT,
         );
 
         $response = $this->client->getResponse();
@@ -63,7 +65,7 @@ class RegenerateApiKeyTest extends FeatureTestCase
     {
         $this->client->request(
             'PATCH',
-            '/api/v1/api-key/regenerate',
+            self::ENDPOINT,
             [
                 'email' => 'nonexistent@example.com'
             ]

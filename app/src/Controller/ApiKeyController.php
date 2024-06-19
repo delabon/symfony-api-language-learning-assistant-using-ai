@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Api\v1;
+namespace App\Controller;
 
 use App\Repository\UserRepository;
 use App\Service\ApiKeyGenerator;
@@ -12,7 +12,14 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ApiKeyController extends AbstractController
 {
-    #[Route('/api/v1/api-key/regenerate', name: 'api_key_regenerate', methods: ['PATCH'])]
+    /**
+     * Regenerate api key, this endpoint does not require authentication because the user could lose his api key
+     * @param UserRepository $userRepository
+     * @param Request $request
+     * @param ApiKeyGenerator $apiKeyGenerator
+     * @return JsonResponse
+     */
+    #[Route('/api-key/regenerate', name: 'api_key_regenerate', methods: ['PATCH'])]
     public function index(
         UserRepository $userRepository,
         Request $request,
