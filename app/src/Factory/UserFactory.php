@@ -16,6 +16,7 @@ class UserFactory extends Factory
             'email' => $this->faker->email(),
             'name' => $this->faker->name(),
             'username' => $this->faker->text(50),
+            'roles' => ['ROLE_USER'],
             'createdAt' => DateTimeImmutable::createFromMutable($this->faker->dateTime()),
             'updatedAt' => DateTimeImmutable::createFromMutable($this->faker->dateTime()),
         ];

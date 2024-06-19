@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints AS Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -18,7 +19,7 @@ use Symfony\Component\Validator\Constraints AS Assert;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_API_KEY', fields: ['apiKey'])]
-class User
+class User implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
@@ -62,6 +63,12 @@ class User
      */
     #[ORM\OneToMany(targetEntity: Conversation::class, mappedBy: 'userEntity', orphanRemoval: true)]
     private Collection $conversations;
+
+    /**
+     * @var array|string[]
+     */
+    #[ORM\Column(nullable: true, options: ['default' => '["ROLE_USER"]'])]
+    private array $roles = [];
 
     public function __construct()
     {
@@ -193,5 +200,33 @@ class User
         }
 
         return $this;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param array|string[] $roles
+     * @return $this
+     */
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->apiKey;
     }
 }
