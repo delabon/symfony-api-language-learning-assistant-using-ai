@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use App\Enum\LanguageEnum;
 use App\Repository\ConversationRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ConversationRepository::class)]
 class Conversation
@@ -13,66 +16,66 @@ class Conversation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private string $language = '';
+    #[ORM\Column(type: 'language_enum', length: 255)]
+    private ?LanguageEnum $language = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'conversations')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'conversations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $userEntity = null;
+    private ?UserInterface $userEntity = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLanguage(): string
+    public function getLanguage(): ?LanguageEnum
     {
         return $this->language;
     }
 
-    public function setLanguage(string $language): static
+    public function setLanguage(LanguageEnum $language): static
     {
         $this->language = $language;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getUserEntity(): ?User
+    public function getUserEntity(): ?UserInterface
     {
         return $this->userEntity;
     }
 
-    public function setUserEntity(?User $userEntity): static
+    public function setUserEntity(?UserInterface $userEntity): static
     {
         $this->userEntity = $userEntity;
 
