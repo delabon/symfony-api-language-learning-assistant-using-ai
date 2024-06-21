@@ -15,6 +15,7 @@ class UserFactoryTest extends IntegrationTestCase
         /** @var UserFactory $userFactory */
         $userFactory = $this->getContainer()->get(UserFactory::class);
 
+        /** @var User $user */
         $user = $userFactory->create();
 
         $this->assertInstanceOf(UserFactory::class, $userFactory);
