@@ -24,7 +24,6 @@ class RegisterController extends AbstractController
     ): JsonResponse
     {
         $user = User::createFromArray($request->getPayload()->all());
-        $user->setApiKey($apiKeyGenerator->generate($user));
         $user->setCreatedAt(new DateTimeImmutable());
         $user->setUpdatedAt($user->getCreatedAt());
 
@@ -42,6 +41,8 @@ class RegisterController extends AbstractController
                 'input_errors' => $inputErrors
             ], Response::HTTP_BAD_REQUEST);
         }
+
+        $user->setApiKey($apiKeyGenerator->generate($user));
 
         $entityManager->persist($user);
         $entityManager->flush();

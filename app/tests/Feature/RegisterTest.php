@@ -6,8 +6,6 @@ use App\Entity\User;
 use App\Factory\UserFactory;
 use App\Repository\UserRepository;
 use App\Tests\FeatureTestCase;
-use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Faker\Factory;
 use Symfony\Component\HttpFoundation\Response;
 
