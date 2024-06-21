@@ -18,4 +18,12 @@ class LanguageEnumTest extends UnitTestCase
         $this->assertNull(LanguageEnum::find('my invalid language haha'));
         $this->assertNull(LanguageEnum::find('Ainu'));
     }
+
+    public function testRandomMethodReturnsRandomLanguage(): void
+    {
+        $language = LanguageEnum::random();
+
+        $this->assertNotNull($language);
+        $this->assertInstanceOf(LanguageEnum::class, $language);
+    }
 }

@@ -21,4 +21,9 @@ enum LanguageEnum: string
 
         return null;
     }
+
+    public static function random(): ?LanguageEnum
+    {
+        return self::cases()[array_rand(self::cases())];
+    }
 }
