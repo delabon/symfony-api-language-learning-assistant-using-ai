@@ -5,6 +5,7 @@ namespace App\Controller\Api\v1;
 use App\Entity\Conversation;
 use App\Enum\LanguageEnum;
 use App\Repository\ConversationRepository;
+use App\Security\Voter\ConversationVoter;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,11 +16,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[Route('/api/v1/conversation', name: 'conversation_')]
 #[IsGranted('ROLE_USER')]
 class ConversationController extends AbstractController
 {
-    #[Route('/api/v1/conversation/create', name: 'conversation_create', methods: ['POST'])]
-    public function index(
+    #[Route('/create', name: 'create', methods: ['POST'])]
+    public function create(
         Request $request,
         EntityManagerInterface $entityManager,
         Security $security,
@@ -56,5 +58,17 @@ class ConversationController extends AbstractController
             'success' => true,
             'id' => $conversation->getId(),
         ]);
+    }
+
+    #[Route('/delete/{id<\d+>}', name: 'delete', methods: ['DELETE'])]
+    #[IsGranted(ConversationVoter::DELETE, subject: 'conversation')]
+    public function delete(
+        Conversation $conversation,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $entityManager->remove($conversation);
+        $entityManager->flush();
+
+        return $this->json(['success' => true]);
     }
 }
