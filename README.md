@@ -1,6 +1,11 @@
 A RESTful application to help users learn new languages through conversation practice with AI.
 
-- **Key Feature**: 
+**Key Feature**: 
+- Registration
+- API endpoints for managing conversations
+- API endpoints for chatting with ChatGPT
+- API key generation
+- API rate limit
 
 ### Tech stack
 
@@ -8,6 +13,7 @@ A RESTful application to help users learn new languages through conversation pra
 - **Database**: PostgreSQL 16.3
 - **Testing**: PHPUnit for unit, integration and feature testing
 - **Static Analysis**: PHPStan for analyzing code quality
+- **Coding Standard Analysis**: PHP-CS-FIXER for enforcing PSR12 coding standards
 - **Environment Management**: Docker for containerization and consistent development environments
 - **CI**: Github actions for continuous Integration
 - **Openai**: ChatGPT API for conversation practice
