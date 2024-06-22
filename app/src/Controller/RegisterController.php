@@ -41,16 +41,15 @@ class RegisterController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $user->setApiKey($apiKeyGenerator->generate($user));
+        $apiKey = $apiKeyGenerator->generate($user);
+        $user->setApiKey(hash('sha384', $apiKey));
 
         $entityManager->persist($user);
         $entityManager->flush();
 
         return $this->json([
             'success' => true,
-            'data' => [
-                'api_key' => $user->getApiKey(),
-            ],
+            'api_key' => $apiKey,
         ]);
     }
 }

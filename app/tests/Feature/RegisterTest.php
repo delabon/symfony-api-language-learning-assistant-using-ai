@@ -35,11 +35,10 @@ class RegisterTest extends FeatureTestCase
         $this->assertResponseIsSuccessful();
         $this->assertIsArray($responseData);
         $this->assertArrayHasKey('success', $responseData);
-        $this->assertArrayHasKey('data', $responseData);
+        $this->assertArrayHasKey('api_key', $responseData);
         $this->assertTrue($responseData['success']);
-        $this->assertArrayHasKey('api_key', $responseData['data']);
-        $this->assertIsString($responseData['data']['api_key']);
-        $this->assertEquals(128, strlen($responseData['data']['api_key']));
+        $this->assertIsString($responseData['api_key']);
+        $this->assertEquals(128, strlen($responseData['api_key']));
 
         // Count the number of users after registration
         $users = $userRepository->findAll();
@@ -50,7 +49,7 @@ class RegisterTest extends FeatureTestCase
         $this->assertSame('John Doe', $users[0]->getName());
         $this->assertSame('johndoe@example.com', $users[0]->getEmail());
         $this->assertSame('johndoe', $users[0]->getUsername());
-        $this->assertEquals(128, strlen($users[0]->getApiKey()));
+        $this->assertEquals(96, strlen($users[0]->getApiKey()));
     }
 
     public function testRegistersMoreThanOneUserSuccessfully(): void
@@ -90,6 +89,29 @@ class RegisterTest extends FeatureTestCase
         $this->assertGreaterThan(0, $users[0]->getId());
         $this->assertGreaterThan(0, $users[1]->getId());
         $this->assertNotEquals($users[0]->getId(), $users[1]->getId());
+    }
+
+    public function testHashApiKeyWhenRegistering(): void
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->entityManager->getRepository(User::class);
+
+        $this->client->request(
+            'POST',
+            '/register',
+            parameters: [
+                'name' => 'Sami Khan',
+                'username' => 'samikhan',
+                'email' => 'samikhan@example.com',
+            ]
+        );
+
+        $response = $this->client->getResponse();
+        $responseData = json_decode($response->getContent(), true);
+        $users = $userRepository->findAll();
+
+        $this->assertNotSame($users[0]->getApiKey(), $responseData['api_key']);
+        $this->assertSame(hash('sha384', $responseData['api_key']), $users[0]->getApiKey());
     }
 
     /**
