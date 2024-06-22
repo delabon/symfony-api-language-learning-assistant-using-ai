@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\UserRepository;
 use App\Service\ApiKeyGenerator;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,8 @@ class ApiKeyController extends AbstractController
     public function index(
         UserRepository $userRepository,
         Request $request,
-        ApiKeyGenerator $apiKeyGenerator
+        ApiKeyGenerator $apiKeyGenerator,
+        EntityManagerInterface $entityManager
     ): JsonResponse {
         $email = $request->getPayload()->get('email');
 
@@ -43,11 +45,14 @@ class ApiKeyController extends AbstractController
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $user->setApiKey($apiKeyGenerator->generate($user));
+        $apiKey = $apiKeyGenerator->generate($user);
+        $user->setApiKey(hash('sha384', $apiKey));
+
+        $entityManager->flush();
 
         return $this->json([
             'success' => true,
-            'api_key' => $user->getApiKey(),
+            'api_key' => $apiKey,
         ]);
     }
 }

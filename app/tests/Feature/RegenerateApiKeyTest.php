@@ -15,12 +15,13 @@ class RegenerateApiKeyTest extends FeatureTestCase
     public function testRegenerateApiKeySuccessfully(): void
     {
         $userRepository = $this->entityManager->getRepository(User::class);
-        $email = str_repeat('a', 128);
+        $email = 'test@example.com';
 
         /** @var User $user */
         $user = (new UserFactory(Factory::create(), $this->entityManager))->create([
             'email' => $email
         ]);
+        $oldApiKey = $user->getApiKey();
 
         $this->client->request(
             'PATCH',
@@ -32,6 +33,7 @@ class RegenerateApiKeyTest extends FeatureTestCase
 
         $response = $this->client->getResponse();
         $result = json_decode($response->getContent(), true);
+        $fetchedUser = $userRepository->find($user->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertIsArray($result);
@@ -39,8 +41,11 @@ class RegenerateApiKeyTest extends FeatureTestCase
         $this->assertTrue($result['success']);
         $this->assertArrayHasKey('api_key', $result);
         $this->assertEquals(128, strlen($result['api_key']));
-        $this->assertNotSame($email, $user->getApiKey());
-        $this->assertSame($userRepository->find($user->getId())->getApiKey(), $user->getApiKey());
+
+        $this->assertNotSame($oldApiKey, $result['api_key']);
+        $this->assertNotSame($oldApiKey, $fetchedUser->getApiKey());
+        $this->assertNotSame($result['api_key'], $fetchedUser->getApiKey());
+        $this->assertSame(hash('sha384', $result['api_key']), $fetchedUser->getApiKey());
     }
 
     public function testReturnsBadRequestResponseWhenNoEmail(): void
