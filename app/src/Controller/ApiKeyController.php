@@ -24,8 +24,7 @@ class ApiKeyController extends AbstractController
         UserRepository $userRepository,
         Request $request,
         ApiKeyGenerator $apiKeyGenerator
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $email = $request->getPayload()->get('email');
 
         if (!$email) {

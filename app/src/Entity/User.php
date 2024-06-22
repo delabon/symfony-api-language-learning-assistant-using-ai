@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints AS Assert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -36,7 +36,7 @@ class User implements UserInterface
     private string $name = '';
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'The username should not be blank.',)]
+    #[Assert\NotBlank(message: 'The username should not be blank.')]
     #[Assert\Regex(
         pattern: '/^[a-z0-9][a-z0-9_]+$/',
         message: 'The username should only contain lowercase letters, numbers, and underscores.'

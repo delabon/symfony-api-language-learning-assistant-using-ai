@@ -24,8 +24,7 @@ class ConversationController extends AbstractController
         EntityManagerInterface $entityManager,
         Security $security,
         ConversationRepository $conversationRepository
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $language = LanguageEnum::find($request->getPayload()->get('language'));
 
         if (!$language) {

@@ -21,8 +21,7 @@ class RegisterController extends AbstractController
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
         ApiKeyGenerator $apiKeyGenerator
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $user = User::createFromArray($request->getPayload()->all());
         $user->setCreatedAt(new DateTimeImmutable());
         $user->setUpdatedAt($user->getCreatedAt());

@@ -72,7 +72,7 @@ abstract class Factory implements FactoryInterface
             throw new RuntimeException('Entity class "' . $this->entityClass . '" does not exist.');
         }
 
-        $object = new $this->entityClass;
+        $object = new $this->entityClass();
         $props = $this->getClassProps($object);
         $data = $this->overrideDefaults($overrides);
 

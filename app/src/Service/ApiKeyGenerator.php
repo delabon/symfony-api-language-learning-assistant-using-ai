@@ -11,8 +11,7 @@ readonly class ApiKeyGenerator
     public function __construct(
         #[Autowire('%app_secret%')]
         private string $appSecret
-    )
-    {
+    ) {
     }
 
     public function generate(User $user): string
