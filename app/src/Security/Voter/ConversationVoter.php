@@ -13,10 +13,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class ConversationVoter extends Voter
 {
     public const DELETE = 'CONVERSATION_DELETE';
+    public const GET = 'CONVERSATION_GET';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute == self::DELETE && $subject instanceof Conversation;
+        return in_array($attribute, [self::DELETE, self::GET]) && $subject instanceof Conversation;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool

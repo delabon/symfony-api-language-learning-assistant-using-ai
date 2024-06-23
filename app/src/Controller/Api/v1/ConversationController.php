@@ -71,4 +71,17 @@ class ConversationController extends AbstractController
 
         return $this->json(['success' => true]);
     }
+
+    #[Route('/{id<\d+>}', name: 'get', methods: ['GET'])]
+    #[IsGranted(ConversationVoter::GET, subject: 'conversation')]
+    public function get(
+        Conversation $conversation,
+    ): JsonResponse {
+
+        return $this->json([
+            'success' => true,
+            'id' => $conversation->getId(),
+            'language' => $conversation->getLanguage()->value
+        ]);
+    }
 }
