@@ -84,4 +84,19 @@ class ConversationController extends AbstractController
             'language' => $conversation->getLanguage()->value
         ]);
     }
+
+    #[Route('/list', name: 'list', methods: ['GET'])]
+    public function list(
+        ConversationRepository $conversationRepository,
+        Security $security
+    ): JsonResponse {
+        return $this->json(
+            $conversationRepository->findBy([
+                'userEntity' => $security->getUser()
+            ]),
+            context: [
+                'groups' => ['conversations.list']
+            ]
+        );
+    }
 }

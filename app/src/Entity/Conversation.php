@@ -7,6 +7,7 @@ use App\Repository\ConversationRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ConversationRepository::class)]
 class Conversation
@@ -14,14 +15,18 @@ class Conversation
     #[ORM\Id]
     #[ORM\GeneratedValue('IDENTITY')]
     #[ORM\Column]
+    #[Groups(['conversations.list'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'language_enum', length: 255)]
+    #[Groups(['conversations.list'])]
     private ?LanguageEnum $language = null;
 
     #[ORM\Column]
+    #[Groups(['conversations.list'])]
     private ?DateTimeImmutable $createdAt = null;
 
+    #[Groups(['conversations.list'])]
     #[ORM\Column]
     private ?DateTimeImmutable $updatedAt = null;
 
