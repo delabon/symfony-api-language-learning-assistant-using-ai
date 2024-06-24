@@ -37,12 +37,17 @@ class GetConversationTest extends FeatureTestCase
 
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertIsArray($result);
-        $this->assertArrayHasKey('success', $result);
-        $this->assertTrue($result['success']);
+
         $this->assertArrayHasKey('id', $result);
-        $this->assertGreaterThan(0, $result['id']);
         $this->assertArrayHasKey('language', $result);
-        $this->assertSame(LanguageEnum::Arabic->value, $result['language']);
+        $this->assertArrayHasKey('created_at', $result);
+        $this->assertArrayHasKey('updated_at', $result);
+        $this->assertArrayNotHasKey('userEntity', $result);
+        $this->assertArrayNotHasKey('user_entity', $result);
+        $this->assertSame($conversation->getId(), $result['id']);
+        $this->assertSame($conversation->getLanguage()->value, $result['language']);
+        $this->assertSame($conversation->getCreatedAt()->format('Y-m-d H-i-s'), $result['created_at']);
+        $this->assertSame($conversation->getUpdatedAt()->format('Y-m-d H-i-s'), $result['updated_at']);
     }
 
     public function testReturnsNotFoundResponseWhenNoId(): void

@@ -75,14 +75,15 @@ class ConversationController extends AbstractController
     #[Route('/{id<\d+>}', name: 'get', methods: ['GET'])]
     #[IsGranted(ConversationVoter::GET, subject: 'conversation')]
     public function get(
-        Conversation $conversation,
+        Conversation $conversation
     ): JsonResponse {
 
-        return $this->json([
-            'success' => true,
-            'id' => $conversation->getId(),
-            'language' => $conversation->getLanguage()->value
-        ]);
+        return $this->json(
+            $conversation,
+            context: [
+                'groups' => ['conversations.list']
+            ]
+        );
     }
 
     #[Route('/list', name: 'list', methods: ['GET'])]
