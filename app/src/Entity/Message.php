@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use App\Doctrine\MessageAuthorEnum;
 use App\Repository\MessageRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,27 +17,27 @@ class Message
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $body = null;
+    private string $body = '';
 
     #[ORM\Column(length: 255)]
-    private ?string $author = null;
+    private ?MessageAuthorEnum $author = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Conversation $conversation = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getBody(): ?string
+    public function getBody(): string
     {
         return $this->body;
     }
@@ -47,12 +49,12 @@ class Message
         return $this;
     }
 
-    public function getAuthor(): ?string
+    public function getAuthor(): MessageAuthorEnum
     {
         return $this->author;
     }
 
-    public function setAuthor(string $author): static
+    public function setAuthor(MessageAuthorEnum $author): static
     {
         $this->author = $author;
 
@@ -71,24 +73,24 @@ class Message
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 
