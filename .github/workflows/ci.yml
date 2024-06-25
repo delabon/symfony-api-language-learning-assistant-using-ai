@@ -63,5 +63,5 @@ jobs:
         working-directory: app
 
       - name: PHP-CS-Fixer Analysis
-        run: vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation
+        run: vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --diff
         working-directory: app
