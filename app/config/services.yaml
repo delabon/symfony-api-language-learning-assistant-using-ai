@@ -5,6 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app_secret: '%env(APP_SECRET)%'
+    openai_secret: '%env(OPENAI_SECRET)%'
+
 services:
     # default configuration for services in *this* file
     _defaults:
