@@ -77,7 +77,6 @@ class ConversationController extends AbstractController
     public function get(
         Conversation $conversation
     ): JsonResponse {
-
         return $this->json(
             $conversation,
             context: [
