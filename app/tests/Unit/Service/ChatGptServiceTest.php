@@ -4,6 +4,7 @@ namespace App\Tests\Unit\Service;
 
 use App\Doctrine\MessageAuthorEnum;
 use App\Exception\ApiServerErrorException;
+use App\Exception\ApiServerIsOverloadedException;
 use App\Exception\RateLimitException;
 use App\Exception\UnsupportedRegionException;
 use App\Service\ChatGptService;
@@ -392,6 +393,51 @@ class ChatGptServiceTest extends UnitTestCase
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         $this->expectExceptionMessage('Unexpected response from the API server.');
+
+        $chatGptService->completions($messages);
+    }
+
+    public function testMethodCompletionsReturnsApiServerOverloadedResponseWhenApiServerIsOverloaded(): void
+    {
+        $fakeApiKey = 'This is a valid api key';
+        $messages = [
+            [
+                'role' => MessageAuthorEnum::SYSTEM,
+                'content' => 'You are a helpful assistant.'
+            ],
+            [
+                'role' => MessageAuthorEnum::USER,
+                'content' => 'How are you today?'
+            ]
+        ];
+        $httpClientResponseMock = $this->createMock(FakeHttpClientResponse::class);
+        $httpClientResponseMock->expects($this->once())
+            ->method('getStatusCode')
+            ->willReturn(Response::HTTP_SERVICE_UNAVAILABLE);
+
+        $httpClientMock = $this->createMock(FakeHttpClient::class);
+        $httpClientMock->expects($this->once())
+            ->method('request')
+            ->with(
+                'POST',
+                'https://api.openai.com/v1/chat/completions',
+                [
+                    'headers' => [
+                        0 => 'Content-Type: application/json',
+                        1 => 'Authorization: Bearer ' . $fakeApiKey
+                    ],
+                    'body' => json_encode([
+                        'messages' => $messages,
+                        'model' => 'gpt-4'
+                    ]),
+                ],
+            )->willReturn($httpClientResponseMock);
+
+        $chatGptService = new ChatGptService($httpClientMock, $fakeApiKey);
+
+        $this->expectException(ApiServerIsOverloadedException::class);
+        $this->expectExceptionCode(Response::HTTP_SERVICE_UNAVAILABLE);
+        $this->expectExceptionMessage('API server is overloaded.');
 
         $chatGptService->completions($messages);
     }

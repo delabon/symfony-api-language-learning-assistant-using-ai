@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Exception\ApiServerErrorException;
+use App\Exception\ApiServerIsOverloadedException;
 use App\Exception\RateLimitException;
 use App\Exception\UnsupportedRegionException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -28,6 +29,7 @@ class ChatGptService
      * @param array<int, array<string, string>> $messages
      * @return string
      * @throws ApiServerErrorException
+     * @throws ApiServerIsOverloadedException
      * @throws ClientExceptionInterface
      * @throws RateLimitException
      * @throws RedirectionExceptionInterface
@@ -53,6 +55,7 @@ class ChatGptService
             Response::HTTP_FORBIDDEN => throw new UnsupportedRegionException('Country, region, or territory not supported.', Response::HTTP_FORBIDDEN),
             Response::HTTP_TOO_MANY_REQUESTS => throw new RateLimitException('Rate limit reached for requests.', Response::HTTP_TOO_MANY_REQUESTS),
             Response::HTTP_INTERNAL_SERVER_ERROR => throw new ApiServerErrorException('Something wrong with the API server.', Response::HTTP_INTERNAL_SERVER_ERROR),
+            Response::HTTP_SERVICE_UNAVAILABLE => throw new ApiServerIsOverloadedException('API server is overloaded.', Response::HTTP_SERVICE_UNAVAILABLE),
             default => json_decode($result->getContent(false), true),
         };
 
