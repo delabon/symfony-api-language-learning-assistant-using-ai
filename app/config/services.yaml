@@ -35,3 +35,6 @@ when@test:
         App\Factory\ConversationFactory:
             arguments: [ '@Faker\Generator', '@Doctrine\ORM\EntityManagerInterface' ]
             public: true
+        App\Factory\MessageFactory:
+            arguments: [ '@Faker\Generator', '@Doctrine\ORM\EntityManagerInterface' ]
+            public: true
