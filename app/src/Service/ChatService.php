@@ -29,7 +29,7 @@ class ChatService
 
     public function addSystemMessage(Conversation $conversation): Message
     {
-        $message = $this->createMessage($conversation, 'You are a helpful assistant. You are a language teacher and the language you are helping me with is ' . $conversation->getLanguage()->value, MessageAuthorEnum::SYSTEM);
+        $message = $this->createMessage($conversation, 'You are a helpful assistant. You are a language teacher and the language you are helping me with is ' . $conversation->getLanguage()->value . '.', MessageAuthorEnum::SYSTEM);
         $this->entityManager->persist($message);
         $this->entityManager->flush();
 
@@ -69,5 +69,23 @@ class ChatService
         $message->setUpdatedAt(new DateTimeImmutable());
 
         return $message;
+    }
+
+    /**
+     * @param Conversation $conversation
+     * @return array<int, array<string, string>>
+     */
+    public function getMessages(Conversation $conversation): array
+    {
+        $messages = [];
+
+        foreach ($this->messageRepository->findBy(['conversation' => $conversation]) as $message) {
+            $messages[] = [
+                'role' => $message->getAuthor()->value,
+                'content' => $message->getBody(),
+            ];
+        }
+
+        return $messages;
     }
 }

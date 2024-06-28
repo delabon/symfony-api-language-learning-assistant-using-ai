@@ -3,6 +3,9 @@
 namespace App\Tests\Unit\Service;
 
 use App\Doctrine\MessageAuthorEnum;
+use App\Entity\Conversation;
+use App\Entity\User;
+use App\Enum\LanguageEnum;
 use App\Repository\MessageRepository;
 use App\Service\ChatService;
 use App\Tests\Trait\ConversationCreator;
@@ -66,7 +69,7 @@ class ChatServiceTest extends UnitTestCase
     public function testAddsSystemMessageSuccessfully(): void
     {
         $conversation = $this->createConversationWithId(7323);
-        $body = 'You are a helpful assistant. You are a language teacher and the language you are helping me with is ' . $conversation->getLanguage()->value;
+        $body = 'You are a helpful assistant. You are a language teacher and the language you are helping me with is ' . $conversation->getLanguage()->value . '.';
         $message = $this->createMessage($body, MessageAuthorEnum::SYSTEM, $conversation);
 
         $messageRepositoryMock = $this->createMock(MessageRepository::class);
@@ -154,5 +157,72 @@ class ChatServiceTest extends UnitTestCase
         $this->assertSame($assistantMessage->getAuthor(), $createdMessage->getAuthor());
         $this->assertSame($assistantMessage->getBody(), $createdMessage->getBody());
         $this->assertSame($assistantMessage->getBody(), $createdMessage->getBody());
+    }
+
+    // Method getMethods
+    public function testGetMessagesReturnsMessagesSuccessfully(): void
+    {
+        $conversation = new Conversation();
+        $conversation->setLanguage(LanguageEnum::ENGLISH);
+        $conversation->setUserEntity(new User());
+
+        $entityManagerMock = $this->createStub(EntityManagerInterface::class);
+        $messageRepositoryMock = $this->createMock(MessageRepository::class);
+        $messageRepositoryMock->expects($this->once())
+            ->method('findBy')
+            ->with([
+                'conversation' => $conversation
+            ])
+            ->willReturnCallback(function ($criteria) {
+                $message1 = $this->createMessageWithId(234, 'Message 1', MessageAuthorEnum::SYSTEM, $criteria['conversation']);
+                $message2 = $this->createMessageWithId(563, 'Message 2', MessageAuthorEnum::USER, $criteria['conversation']);
+
+                return [
+                    $message1,
+                    $message2
+                ];
+            });
+
+        $chatService = new ChatService($messageRepositoryMock, $entityManagerMock);
+
+        $messages = $chatService->getMessages($conversation);
+
+        $this->assertIsArray($messages);
+        $this->assertCount(2, $messages);
+        $this->assertIsArray($messages[0]);
+        $this->assertIsArray($messages[1]);
+        $this->assertArrayHasKey('role', $messages[0]);
+        $this->assertArrayHasKey('content', $messages[0]);
+        $this->assertArrayHasKey('role', $messages[1]);
+        $this->assertArrayHasKey('content', $messages[1]);
+        $this->assertSame(MessageAuthorEnum::SYSTEM->value, $messages[0]['role']);
+        $this->assertSame(MessageAuthorEnum::USER->value, $messages[1]['role']);
+        $this->assertNotEmpty('content', $messages[0]['content']);
+        $this->assertIsString('content', $messages[0]['content']);
+        $this->assertNotEmpty('content', $messages[1]['content']);
+        $this->assertIsString('content', $messages[1]['content']);
+    }
+
+    public function testGetMessagesReturnsEmptyArrayWhenNoMessages(): void
+    {
+        $conversation = new Conversation();
+        $conversation->setLanguage(LanguageEnum::ENGLISH);
+        $conversation->setUserEntity(new User());
+
+        $entityManagerMock = $this->createStub(EntityManagerInterface::class);
+        $messageRepositoryMock = $this->createMock(MessageRepository::class);
+        $messageRepositoryMock->expects($this->once())
+            ->method('findBy')
+            ->with([
+                'conversation' => $conversation
+            ])
+            ->willReturn([]);
+
+        $chatService = new ChatService($messageRepositoryMock, $entityManagerMock);
+
+        $messages = $chatService->getMessages($conversation);
+
+        $this->assertIsArray($messages);
+        $this->assertCount(0, $messages);
     }
 }
