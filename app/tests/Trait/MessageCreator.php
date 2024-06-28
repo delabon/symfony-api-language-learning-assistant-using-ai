@@ -24,9 +24,9 @@ trait MessageCreator
         return $message;
     }
 
-    public function createMessageWithId(int $id, string $body, MessageAuthorEnum $messageAuthorEnum = MessageAuthorEnum::USER, ?Conversation $message= null): Message
+    public function createMessageWithId(int $id, string $body, MessageAuthorEnum $messageAuthorEnum = MessageAuthorEnum::USER, ?Conversation $conversation= null): Message
     {
-        $message = $this->createMessage($body, $messageAuthorEnum, $message);
+        $message = $this->createMessage($body, $messageAuthorEnum, $conversation);
 
         $reflectionClass = new ReflectionClass($message);
         $prop = $reflectionClass->getProperty('id');
