@@ -220,4 +220,37 @@ class ChatWithAiTest extends FeatureTestCase
         $this->assertArrayHasKey('conversation', $result['errors']);
         $this->assertSame('The conversation does not exist.', $result['errors']['conversation']);
     }
+
+    public function testReturnsUnauthorizedResponseWhenNoApiKey(): void
+    {
+        $this->client->request(
+            'POST',
+            '/api/v1/message/create',
+            parameters: [
+                'conversation_id' => 324,
+                'body' => 'Cool day today.'
+            ],
+        );
+
+        $response = $this->client->getResponse();
+        $this->assertSame(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
+    }
+
+    public function testReturnsUnauthorizedResponseWhenInvalidApiKey(): void
+    {
+        $this->client->request(
+            'POST',
+            '/api/v1/message/create',
+            parameters: [
+                'conversation_id' => 324,
+                'body' => 'Cool day today.'
+            ],
+            server: [
+                'HTTP_Authorization' => 'Bearer Fake API SECRET'
+            ]
+        );
+
+        $response = $this->client->getResponse();
+        $this->assertSame(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
+    }
 }

@@ -9,8 +9,10 @@ use App\Exception\ApiServerIsOverloadedException;
 use App\Exception\RateLimitException;
 use App\Exception\UnsupportedRegionException;
 use App\Repository\ConversationRepository;
+use App\Repository\MessageRepository;
 use App\Service\ChatGptService;
 use App\Service\ChatService;
+use App\Service\ConversationService;
 use DateTimeImmutable;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,41 +21,30 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
+#[Route('/api/v1/message', name: 'message_')]
+#[IsGranted('ROLE_USER')]
 class MessageController extends AbstractController
 {
-    #[Route('/api/v1/message/create', name: 'message_create')]
+    #[Route('/create', name: 'create')]
     public function create(
         Request $request,
-        ConversationRepository $conversationRepository,
         ChatService $chatService,
         ValidatorInterface $validator,
-        ChatGptService $chatGptService
+        ChatGptService $chatGptService,
+        ConversationService $conversationService
     ): JsonResponse {
         $body = $request->getPayload()->get('body', '');
-        $conversationId = $request->getPayload()->getInt('conversation_id');
+        $conversation = $conversationService->get($request->getPayload()->getInt('conversation_id'));
 
-        if (!$conversationId) {
-            return $this->json([
-                'errors' => [
-                    'conversation' => 'Invalid conversation id.'
-                ]
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        $conversation = $conversationRepository->find($conversationId);
-
-        if (!$conversation) {
-            return $this->json([
-                'errors' => [
-                    'conversation' => 'The conversation does not exist.'
-                ]
-            ], Response::HTTP_NOT_FOUND);
+        if ($conversation instanceof JsonResponse) {
+            return $conversation;
         }
 
         $message = new Message();
@@ -101,5 +92,22 @@ class MessageController extends AbstractController
         } catch (ApiServerErrorException|ServerExceptionInterface|Exception $e) {
             return $this->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    #[Route('/reset', name: 'reset')]
+    public function reset(
+        Request $request,
+        MessageRepository $messageRepository,
+        ConversationService $conversationService
+    ): JsonResponse {
+        $conversation = $conversationService->get($request->getPayload()->getInt('conversation_id'));
+
+        if ($conversation instanceof JsonResponse) {
+            return $conversation;
+        }
+
+        $messageRepository->reset($conversation);
+
+        return $this->json(true);
     }
 }
