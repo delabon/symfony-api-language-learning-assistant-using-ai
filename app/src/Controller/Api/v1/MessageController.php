@@ -3,13 +3,14 @@
 namespace App\Controller\Api\v1;
 
 use App\Doctrine\MessageAuthorEnum;
+use App\Entity\Conversation;
 use App\Entity\Message;
 use App\Exception\ApiServerErrorException;
 use App\Exception\ApiServerIsOverloadedException;
 use App\Exception\RateLimitException;
 use App\Exception\UnsupportedRegionException;
-use App\Repository\ConversationRepository;
 use App\Repository\MessageRepository;
+use App\Security\Voter\MessageVoter;
 use App\Service\ChatGptService;
 use App\Service\ChatService;
 use App\Service\ConversationService;
@@ -32,7 +33,7 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 #[IsGranted('ROLE_USER')]
 class MessageController extends AbstractController
 {
-    #[Route('/create', name: 'create')]
+    #[Route('/create', name: 'create', methods: ['POST'])]
     public function create(
         Request $request,
         ChatService $chatService,
@@ -94,18 +95,12 @@ class MessageController extends AbstractController
         }
     }
 
-    #[Route('/reset', name: 'reset')]
+    #[Route('/reset/{id<\d+>}', name: 'reset', methods: ['POST'])]
+    #[IsGranted(MessageVoter::RESET, subject: 'conversation')]
     public function reset(
-        Request $request,
+        Conversation $conversation,
         MessageRepository $messageRepository,
-        ConversationService $conversationService
     ): JsonResponse {
-        $conversation = $conversationService->get($request->getPayload()->getInt('conversation_id'));
-
-        if ($conversation instanceof JsonResponse) {
-            return $conversation;
-        }
-
         $messageRepository->reset($conversation);
 
         return $this->json(true);
