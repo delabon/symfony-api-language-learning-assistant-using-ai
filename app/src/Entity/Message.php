@@ -25,7 +25,7 @@ class Message
     #[Assert\NotNull]
     private ?MessageAuthorEnum $author = null;
 
-    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[ORM\ManyToOne(cascade: ['remove'], inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     private ?Conversation $conversation = null;
