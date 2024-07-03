@@ -49,7 +49,8 @@ class RegisterTest extends FeatureTestCase
         $this->assertSame('John Doe', $users[0]->getName());
         $this->assertSame('johndoe@example.com', $users[0]->getEmail());
         $this->assertSame('johndoe', $users[0]->getUsername());
-        $this->assertEquals(96, strlen($users[0]->getApiKey()));
+        $this->assertSame(['ROLE_USER'], $users[0]->getRoles());
+        $this->assertSame($users[0]->getApiKey(), $responseData['api_key']);
     }
 
     public function testRegistersMoreThanOneUserSuccessfully(): void
@@ -89,29 +90,6 @@ class RegisterTest extends FeatureTestCase
         $this->assertGreaterThan(0, $users[0]->getId());
         $this->assertGreaterThan(0, $users[1]->getId());
         $this->assertNotEquals($users[0]->getId(), $users[1]->getId());
-    }
-
-    public function testHashApiKeyWhenRegistering(): void
-    {
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->entityManager->getRepository(User::class);
-
-        $this->client->request(
-            'POST',
-            '/register',
-            parameters: [
-                'name' => 'Sami Khan',
-                'username' => 'samikhan',
-                'email' => 'samikhan@example.com',
-            ]
-        );
-
-        $response = $this->client->getResponse();
-        $responseData = json_decode($response->getContent(), true);
-        $users = $userRepository->findAll();
-
-        $this->assertNotSame($users[0]->getApiKey(), $responseData['api_key']);
-        $this->assertSame(hash('sha384', $responseData['api_key']), $users[0]->getApiKey());
     }
 
     /**

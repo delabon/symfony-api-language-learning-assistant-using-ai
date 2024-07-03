@@ -5,8 +5,7 @@ A RESTful application to help users learn new languages through conversation pra
 - API endpoints for managing conversations
 - API endpoints for chatting with ChatGPT
 - API key generation
-- API rate limit
-- API key hashing
+- API documentation
 
 ### Tech stack
 

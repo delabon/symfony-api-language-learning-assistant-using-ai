@@ -12,7 +12,7 @@ class UserFactory extends Factory
     protected function defaults(): array
     {
         return [
-            'apiKey' => $this->faker->text(118),
+            'apiKey' => hash('sha512', uniqid()),
             'email' => $this->faker->email(),
             'name' => $this->faker->name(),
             'username' => $this->faker->text(50),

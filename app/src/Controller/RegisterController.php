@@ -23,6 +23,7 @@ class RegisterController extends AbstractController
         ApiKeyGenerator $apiKeyGenerator
     ): JsonResponse {
         $user = User::createFromArray($request->getPayload()->all());
+        $user->setRoles(['ROLE_USER']);
         $user->setCreatedAt(new DateTimeImmutable());
         $user->setUpdatedAt($user->getCreatedAt());
 
@@ -42,7 +43,7 @@ class RegisterController extends AbstractController
         }
 
         $apiKey = $apiKeyGenerator->generate($user);
-        $user->setApiKey(hash('sha384', $apiKey));
+        $user->setApiKey($apiKey);
 
         $entityManager->persist($user);
         $entityManager->flush();
