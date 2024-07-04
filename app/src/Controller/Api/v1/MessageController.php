@@ -77,7 +77,9 @@ class MessageController extends AbstractController
             $aiReply = $chatGptService->completions($chatService->getMessages($conversation));
             $assistantMessage = $chatService->addAssistantMessage($conversation, $aiReply);
 
-            return $this->json($assistantMessage);
+            return $this->json($assistantMessage, context: [
+                'groups' => ['messages.list']
+            ]);
         } catch (RateLimitException $e) {
             return $this->json(['error' => $e->getMessage()], Response::HTTP_TOO_MANY_REQUESTS);
         } catch (UnsupportedRegionException $e) {

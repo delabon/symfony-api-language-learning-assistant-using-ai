@@ -7,6 +7,7 @@ use App\Repository\MessageRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
@@ -15,14 +16,17 @@ class Message
     #[ORM\Id]
     #[ORM\GeneratedValue('IDENTITY')]
     #[ORM\Column]
+    #[Groups(['messages.list'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Invalid message body.')]
+    #[Groups(['messages.list'])]
     private string $body = '';
 
     #[ORM\Column(length: 255)]
     #[Assert\NotNull]
+    #[Groups(['messages.list'])]
     private ?MessageAuthorEnum $author = null;
 
     #[ORM\ManyToOne(cascade: ['remove'], inversedBy: 'messages')]
@@ -32,10 +36,12 @@ class Message
 
     #[ORM\Column]
     #[Assert\NotNull]
+    #[Groups(['messages.list'])]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
     #[Assert\NotNull]
+    #[Groups(['messages.list'])]
     private ?DateTimeImmutable $updatedAt = null;
 
     public function getId(): ?int
