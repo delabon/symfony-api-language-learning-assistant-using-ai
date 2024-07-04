@@ -46,7 +46,7 @@ class ApiKeyController extends AbstractController
         }
 
         $apiKey = $apiKeyGenerator->generate($user);
-        $user->setApiKey(hash('sha384', $apiKey));
+        $user->setApiKey($apiKey);
 
         $entityManager->flush();
 

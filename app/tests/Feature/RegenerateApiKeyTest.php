@@ -44,8 +44,7 @@ class RegenerateApiKeyTest extends FeatureTestCase
 
         $this->assertNotSame($oldApiKey, $result['api_key']);
         $this->assertNotSame($oldApiKey, $fetchedUser->getApiKey());
-        $this->assertNotSame($result['api_key'], $fetchedUser->getApiKey());
-        $this->assertSame(hash('sha384', $result['api_key']), $fetchedUser->getApiKey());
+        $this->assertSame($result['api_key'], $fetchedUser->getApiKey());
     }
 
     public function testReturnsBadRequestResponseWhenNoEmail(): void
