@@ -11,7 +11,7 @@ A RESTful application to help users learn new languages through conversation pra
 
 - **Backend**: PHP 8.2, Symfony 7.1
 - **Database**: PostgreSQL 16.3
-- **Testing**: PHPUnit for unit, integration and feature testing
+- **Testing**: PHPUnit for unit, integration and feature testing (Developed completely using TDD)
 - **Static Analysis**: PHPStan for analyzing code quality
 - **Coding Standard Analysis**: PHP-CS-FIXER for enforcing PSR12 coding standards
 - **Environment Management**: Docker for containerization and consistent development environments
