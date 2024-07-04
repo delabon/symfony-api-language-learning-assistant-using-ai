@@ -71,11 +71,11 @@ class MessageController extends AbstractController
             $chatService->addSystemMessage($conversation);
         }
 
-        $userMessage = $chatService->addUserMessage($conversation, $body);
+        $chatService->addUserMessage($conversation, $body);
 
         try {
-            $chatGptService->completions($chatService->getMessages($conversation));
-            $assistantMessage = $chatService->addAssistantMessage($conversation, $userMessage->getBody());
+            $aiReply = $chatGptService->completions($chatService->getMessages($conversation));
+            $assistantMessage = $chatService->addAssistantMessage($conversation, $aiReply);
 
             return $this->json($assistantMessage);
         } catch (RateLimitException $e) {
